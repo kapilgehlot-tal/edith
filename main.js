@@ -98,8 +98,9 @@ app.post("/users/:id/action/:type", function (req, res) {
   res.send('success');
 
 });
+const PORT = process.env.PORT || 5000;
 
-var server = app.listen(8081, function () {
+var server = app.listen(PORT, function () {
   var port = server.address().port;
   console.log("EDITH listening at", port);
 });
