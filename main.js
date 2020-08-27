@@ -51,6 +51,10 @@ nodes.set(3, [2, 4]);
 nodes.set(4, [2, 3]);
 nodes.set(5, [2, 3]);
 
+app.get("/", function (req, res) {
+    res.send('eidth');
+});
+
 app.get("/users/:id/active-request", function (req, res) {
   const userId = req.params.id;
   const userData = users.get(userId);
