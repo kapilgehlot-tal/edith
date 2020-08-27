@@ -24,9 +24,7 @@ const widgets = [
   {
     node_id: 4,
     type: "interestSummary",
-    value: {
-        
-    },
+    value: {},
   },
   {
     node_id: 5,
@@ -45,14 +43,14 @@ const widgets = [
 var users = new Map();
 var nodes = new Map();
 nodes.set(0, [1, 2, 3, 4, 5]); //need to change
-nodes.set(1, [2, 3, 4]);
+nodes.set(1, []);
 nodes.set(2, [3, 4]);
-nodes.set(3, [2, 4]);
-nodes.set(4, [2, 3]);
-nodes.set(5, [2, 3]);
+nodes.set(3, []);
+nodes.set(4, []);
+nodes.set(5, []);
 
 app.get("/", function (req, res) {
-    res.send('eidth');
+  res.send("eidth");
 });
 
 app.get("/users/:id/active-request", function (req, res) {
@@ -60,8 +58,8 @@ app.get("/users/:id/active-request", function (req, res) {
   const userData = users.get(userId);
 
   if (userData && userData.isRequestActive) {
-      console.log(userData);
-      res.send({nodeId:userData.nodeId});
+    console.log(userData);
+    res.send({ nodeId: userData.nodeId });
   } else {
     res.send(null);
   }
@@ -78,25 +76,25 @@ app.get("/users/:id/nodes/:nodeId/next-nodes", function (req, res) {
     nodeId: nodeId,
   });
 
-  res.send(childNodeIds.map((nodeId) => {
-    return widgets[nodeId - 1];
-  }));
-
+  res.send(
+    childNodeIds.map((nodeId) => {
+      return widgets[nodeId - 1];
+    }),
+  );
 });
 
 app.post("/users/:id/action/:type", function (req, res) {
   const userId = req.params.id;
   const actionType = req.params.type;
 
-  if(actionType=='CANCEL'){
-      const userData = users.get(userId);
-      userData.isRequestActive = false;
-      userData.nodeId = 0;
-      users.set(userId,userData);
+  if (actionType == "CANCEL") {
+    const userData = users.get(userId);
+    userData.isRequestActive = false;
+    userData.nodeId = 0;
+    users.set(userId, userData);
   }
 
-  res.send('success');
-
+  res.send("success");
 });
 const PORT = process.env.PORT || 5000;
 
