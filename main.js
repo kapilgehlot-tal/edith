@@ -57,11 +57,15 @@ app.get("/users/:id/active-request", function (req, res) {
   const userId = req.params.id;
   const userData = users.get(userId);
 
+  if (!userData) {
+    res.send("Invalid user");
+    return;
+  }
+
   if (userData && userData.isRequestActive) {
-    console.log(userData);
     res.send({ nodeId: userData.nodeId });
   } else {
-    res.send(null);
+    res.send("No active request");
   }
 });
 
@@ -71,6 +75,12 @@ app.get("/users/:id/nodes/:nodeId/next-nodes", function (req, res) {
 
   let childNodeIds = nodes.get(nodeId);
 
+  const userData = users.get(userId);
+
+  if ((userData && userData.nodeId >= nodeId) || (!userData && nodeId > 0)) {
+    res.send("Invalid transition");
+    return;
+  }
   users.set(userId, {
     isRequestActive: true,
     nodeId: nodeId,
@@ -86,12 +96,13 @@ app.get("/users/:id/nodes/:nodeId/next-nodes", function (req, res) {
 app.post("/users/:id/action/:type", function (req, res) {
   const userId = req.params.id;
   const actionType = req.params.type;
-
+  const userData = users.get(userId);
+  if (!userData) {
+    res.send("Invalid user");
+    return;
+  }
   if (actionType == "CANCEL") {
-    const userData = users.get(userId);
-    userData.isRequestActive = false;
-    userData.nodeId = 0;
-    users.set(userId, userData);
+    users.delete(userId);
   }
 
   res.send("success");
